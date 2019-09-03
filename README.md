@@ -24,7 +24,7 @@ The Delaunay namespace provides a Tessellator class which you can use to create 
 
 No stiener points are inserted so the number and ordering of vertices are preserved. The result is a list of triangles with pointers to the vertices contained in the tessellator class.
 
-![alt text][triangle.jpg]
+![Alt text](triangle.PNG?raw=true "Triangle")
 
 Vertices must be unique and not duplicated otherwise this will cause duplicate triangles to be calculated. A function is provided for convinience for this.
 
@@ -56,7 +56,7 @@ e.g This snippet tessellated vertices definiing a ellipse which is 2 units wide,
 
     std::list<Delaunay::Triangle> result = tessellator.triangulate(vertices);
 
-![alt text][examples\ellipse.PNG]
+![Alt text](ellipse.PNG?raw=true "Ellipse")
 
 Constraines are added as vertex index pairs. Constraints are added individually, a single constraint at a time. If the edge defined by the two vertex indexes is already present in the tessellation, it is ignored.
 
@@ -64,7 +64,7 @@ Constraines are added as vertex index pairs. Constraints are added individually,
 
 Then call getTriangles() to get the resultant triangles from the constrained tessellation.
 
-![alt text][examples\constrained.PNG]
+![Alt text](constrained.PNG?raw=true "Constrained")
 
 When adding multiple constraints, edges defining the constraints should ideally not intersect each other, however since they are added individually, one constraining edge will overwrite the other.
 
@@ -72,7 +72,7 @@ e.g Adding another constraint to the above tessellation which crosses the origin
 
     tessellator.addConstraint(std::pair<unsigned int, unsigned int>(segments / 4, 3 * (segments / 4)));
 
-![alt text][constrained2.PNG]
+![Alt text](constrained2.PNG?raw=true "Constrained2")
 
 See examples1.cpp for the above code in all its glory.
 
@@ -90,4 +90,4 @@ This does not create a csv file, only the syntax for a csv file, so caller is re
 * Add tests
 * Doxygenate
 
-![alt text][footer.PNG]
+![Alt text](footer.PNG?raw=true "Footer")
