@@ -471,6 +471,19 @@ namespace Delaunay
 		return oss.str();
 	}
 
+
+	void validate(std::vector<Vector2>& vertices)
+	{
+		std::sort(vertices.begin(), vertices.end(), 
+			[](const Vector2& a, const Vector2& b) 
+		{
+			if (a.x == b.x)
+				return a.y < b.y;
+			return a.x < b.x;
+		});
+
+		vertices.erase(std::unique(vertices.begin(), vertices.end()));
+	}
 }
 
 #endif // DELAUNAY_TRIANGULATION_HPP
