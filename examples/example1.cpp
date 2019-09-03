@@ -20,7 +20,6 @@ int main(int argc, char** argv)
 
 		writeOBJ("triangle.obj", tessellator.triangulate(vertices));
 	}
-	
 
 	// Sqaure...
 	{
@@ -60,14 +59,15 @@ int main(int argc, char** argv)
 		Delaunay::Tessellator tessellator;
 
 		unsigned int segments = 16;
-		double width = 2.0;
-		double height = 1.0;
+		double width = 2.0 /2.0;
+		double height = 1.0 /2.0;
+		double twoPI = 2.0 * Delaunay::pi;
 
 		std::vector<Delaunay::Vector2> vertices;
 
 		for (unsigned int d = 0; d < segments; ++d)
 		{
-			double angle = d * (2.0 * Delaunay::pi) / segments;
+			double angle = d * twoPI / segments;
 			vertices.push_back(Delaunay::Vector2(width * cos(angle), height * sin(angle)));
 		}
 
@@ -75,32 +75,9 @@ int main(int argc, char** argv)
 
 		tessellator.addConstraint(std::pair<unsigned int, unsigned int>(0, segments / 2));
 
-		writeOBJ("contrained.obj", tessellator.getTriangles());
-	}
+		writeOBJ("constrained.obj", tessellator.getTriangles());
 
-	// Constrained example 2...
-	{
-		Delaunay::Tessellator tessellator;
-
-		std::vector<Delaunay::Vector2> vertices;
-		std::vector<unsigned int> indexes;
-
-		unsigned int n = 100;
-
-		std::default_random_engine rng(n);
-		std::uniform_real_distribution<double> rng_dist(0, 255);
-
-		for (unsigned int p = 0; p < n; ++p)
-		{
-			vertices.push_back(Delaunay::Vector2(rng_dist(rng), rng_dist(rng)));
-			indexes.push_back(p);
-		}
-
-		tessellator.triangulate(vertices);
-		
-		tessellator.addConstraint(std::pair<unsigned int, unsigned int>(0, n-1));
-		
-		
+		tessellator.addConstraint(std::pair<unsigned int, unsigned int>(segments / 4, 3 * (segments / 4)));
 
 		writeOBJ("constrained2.obj", tessellator.getTriangles());
 	}
