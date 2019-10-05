@@ -78,11 +78,17 @@ See examples1.cpp for the above code in all its glory.
 
 # Bugs
 
-Please submit bug data (if applicable) as .csv. A CSV output routiune is provided for convinience.
+Please submit bug data (if applicable) as .csv. A CSV output function is provided for convenience.
 
-    Delaunay::csv(...);
+    Delaunay::csv(std::vector<Delaunay::Vector2>)
 
 This does not create a csv file, only the syntax for a csv file, so caller is reposonsible for writing a file.
+
+e.g
+
+    std::ofstream file("bugData.csv");
+    file << Delaunary::csv(vertices);
+
 
 # Future
 
