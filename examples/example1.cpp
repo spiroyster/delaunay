@@ -8,8 +8,6 @@ void writeOBJ(const std::string& filename, const delaunay::tessellator& t);
 
 int main(int argc, char** argv)
 {
-	const static double pi = 3.14159265358979323846;
-
 	// Triangle...
 	{
 		std::vector<delaunay::vector2> vertices({
@@ -35,6 +33,7 @@ int main(int argc, char** argv)
 		writeOBJ("square.obj", t);
 	}
 
+
 	// Ellipse...
 	{
 		unsigned int segments = 16;
@@ -45,7 +44,7 @@ int main(int argc, char** argv)
 		
 		for (unsigned int d = 0; d < segments; ++d)
 		{
-			double angle = d * (2.0 * pi) / segments;
+			double angle = d * (2.0 * delaunay::pi) / segments;
 			vertices.push_back(delaunay::vector2(width * cos(angle), height * sin(angle)));
 		}
 		
@@ -53,63 +52,64 @@ int main(int argc, char** argv)
 		writeOBJ("ellipse.obj", t);
 	}
 
-	//// Constrained...
-	//{
-	//	Delaunay::Tessellator tessellator;
+	// Constrained...
+	{
+		unsigned int segments = 16;
+		double width = 2.0 /2.0;
+		double height = 1.0 /2.0;
+		double twoPI = 2.0 * delaunay::pi;
 
-	//	unsigned int segments = 16;
-	//	double width = 2.0 /2.0;
-	//	double height = 1.0 /2.0;
-	//	double twoPI = 2.0 * Delaunay::pi;
+		std::vector<delaunay::vector2> vertices;
 
-	//	std::vector<delaunay::vector2> vertices;
+		for (unsigned int d = 0; d < segments; ++d)
+		{
+			double angle = d * twoPI / segments;
+			vertices.push_back(delaunay::vector2(width * cos(angle), height * sin(angle)));
+		}
 
-	//	for (unsigned int d = 0; d < segments; ++d)
-	//	{
-	//		double angle = d * twoPI / segments;
-	//		vertices.push_back(delaunay::vector2(width * cos(angle), height * sin(angle)));
-	//	}
+		delaunay::tessellator t(vertices);
 
-	//	tessellator.triangulate(vertices);
+		t.addConstraint(delaunay::edge{ 0, segments / 2 });
 
-	//	tessellator.addConstraint(std::pair<unsigned int, unsigned int>(0, segments / 2));
+		writeOBJ("constrained.obj", t);
 
-	//	writeOBJ("constrained.obj", tessellator.getTriangles());
+		t.addConstraint(delaunay::edge{ segments / 4, 3 * (segments / 4) });
 
-	//	tessellator.addConstraint(std::pair<unsigned int, unsigned int>(segments / 4, 3 * (segments / 4)));
+		writeOBJ("constrained2.obj", t);
+	}
 
-	//	writeOBJ("constrained2.obj", tessellator.getTriangles());
-	//}
+	// Constrained with steiner...
+	{
+		unsigned int segments = 16;
+		double width = 2.0 / 2.0;
+		double height = 1.0 / 2.0;
+		double twoPI = 2.0 * delaunay::pi;
 
-	//// Constrained fix...
-	//{
-	//	Delaunay::Tessellator tessellator;
+		std::vector<delaunay::vector2> vertices;
 
-	//	unsigned int segments = 16;
-	//	double width = 2.0 / 2.0;
-	//	double height = 1.0 / 2.0;
-	//	double twoPI = 2.0 * Delaunay::pi;
+		for (unsigned int d = 0; d < segments; ++d)
+		{
+			double angle = d * twoPI / segments;
+			vertices.push_back(delaunay::vector2(width * cos(angle), height * sin(angle)));
+		}
 
-	//	std::vector<delaunay::vector2> vertices;
+		// insert a steiner point in the centre of the ellipse...
+		vertices.push_back(delaunay::vector2(0, 0));
+		unsigned int steinerIndex = vertices.size() - 1;
 
-	//	for (unsigned int d = 0; d < segments; ++d)
-	//	{
-	//		double angle = d * twoPI / segments;
-	//		vertices.push_back(delaunay::vector2(width * cos(angle), height * sin(angle)));
-	//	}
+		delaunay::tessellator t(vertices);
 
-	//	vertices.push_back(delaunay::vector2(1.0, 0.5));
-	//	unsigned int steinerIndex = vertices.size() - 1;
+		writeOBJ("constrained3.obj", t);
 
-	//	tessellator.triangulate(vertices);
+		t.addConstraint(delaunay::edge{ 0, steinerIndex });
+		t.addConstraint(delaunay::edge{ steinerIndex, segments / 2 });
+		
+		// N.B Due to the default tessellation done, these constraints should already be present as edges, stated here for completness...
+		t.addConstraint(delaunay::edge{ segments / 4, steinerIndex });
+		t.addConstraint(delaunay::edge{ steinerIndex, 3 * (segments / 4) });
 
-	//	tessellator.addConstraint(std::pair<unsigned int, unsigned int>(0, steinerIndex));
-	//	tessellator.addConstraint(std::pair<unsigned int, unsigned int>(steinerIndex, segments / 2));
-	//	tessellator.addConstraint(std::pair<unsigned int, unsigned int>(segments / 4, steinerIndex));
-	//	tessellator.addConstraint(std::pair<unsigned int, unsigned int>(steinerIndex, 3 * (segments / 4)));
-
-	//	writeOBJ("constrained2.obj", tessellator.getTriangles());
-	//}
+		writeOBJ("constrained4.obj", t);
+	}
 
 	// Random points... 1000
 	{
@@ -126,9 +126,6 @@ int main(int argc, char** argv)
 		delaunay::tessellator t(vertices);
 		writeOBJ("random.obj", t);
 	}
-
-
-	// Append example...
 
 	return 0;
 }
