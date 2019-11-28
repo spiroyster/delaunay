@@ -1,3 +1,29 @@
+/*
+	MIT License
+
+	Copyright (c) 2019 Cordell Barron
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+
+	part of https://github.com/spiroyster/delaunay
+*/
+
 #include "..\include\delaunay.hpp"
 
 #include <sstream>
@@ -5,6 +31,11 @@
 #include <random>
 
 void writeOBJ(const std::string& filename, const delaunay::tessellator& t);
+void writeCSV(const std::string& filename, const delaunay::tessellator& t)
+{
+	std::ofstream file(filename);
+	file << delaunay::convenience::csv(t.getVertices());
+}
 
 int main(int argc, char** argv)
 {
@@ -18,6 +49,7 @@ int main(int argc, char** argv)
 
 		delaunay::tessellator t(vertices);
 		writeOBJ("triangle.obj", t);
+		writeCSV("triangle.csv", t);
 	}
 
 	// Sqaure...
@@ -31,6 +63,7 @@ int main(int argc, char** argv)
 
 		delaunay::tessellator t(vertices);
 		writeOBJ("square.obj", t);
+		writeCSV("square.csv", t);
 	}
 
 
@@ -50,6 +83,7 @@ int main(int argc, char** argv)
 		
 		delaunay::tessellator t(vertices);
 		writeOBJ("ellipse.obj", t);
+		writeCSV("ellipse.csv", t);
 	}
 
 	// Constrained...

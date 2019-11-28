@@ -21,6 +21,7 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 
+	part of https://github.com/spiroyster/delaunay
 */
 
 #ifndef DELAUNAY_TESSELLATION_HPP
