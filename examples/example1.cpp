@@ -129,7 +129,7 @@ int main(int argc, char** argv)
 
 		// insert a steiner point in the centre of the ellipse...
 		vertices.push_back(delaunay::vector2(0, 0));
-		unsigned int steinerIndex = vertices.size() - 1;
+		unsigned int steinerIndex = static_cast<unsigned int>(vertices.size() - 1);
 
 		delaunay::tessellator t(vertices);
 

@@ -98,8 +98,11 @@ int main(int argc, char** argv)
 			throw std::exception("Too many arguments.");
 
 		// read the csv vertices...
-		std::vector<delaunay::vector2> inputVertices = readCSV(verticesFilename);
-		std::vector<delaunay::vector2> inputEdges = readCSV(edgesFilename);
+		std::vector<delaunay::vector2> inputVertices, inputEdges;
+		
+		inputVertices = readCSV(verticesFilename); inputVertices = readCSV(verticesFilename);
+		if (!edgesFilename.empty())
+			inputEdges = readCSV(edgesFilename);
 
 		// perform tessellation...
 		delaunay::tessellator dt(inputVertices);
