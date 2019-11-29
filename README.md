@@ -76,15 +76,7 @@ e.g Adding another constraint to the above tessellation which crosses the origin
 
 ![Alt text](constrained2.PNG?raw=true "Constrained2")
 
-To achieve  behavoir is to have both of these constraint edges added to the ellipse, in wich case we need to add an additional vertex to our list of vertices. Adding the intersection point of two oerlapping constraint edges gives a different tessellation (which just so happens to give us a desired constraint edge without adding an edge).
-
-
-however we need to add the other constraint edge (defined by two segments split by the intersection point) to ensure that the resultant tessellation contains all of our constraint edges.
-
 For examples of usage. See **examples/examples1.cpp**.
-
-# Tests
-
 
 # Bugs
 
@@ -95,7 +87,6 @@ Please submit bug data (if applicable) as .csv, ideally this will be added as a 
 This does not create a csv file, only the syntax for a csv file, so the caller is reposonsible for writing a file.
 
 e.g
-
     std::ofstream file("bugData.csv");
     file << delaunary::convenience::csv(vertices);
 
