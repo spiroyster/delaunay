@@ -89,9 +89,49 @@ namespace
 		}
 
 	}
+
+	void check(const std::string& csvFilename, const std::string& edgesFilename, const std::string& objFilename)
+	{
+		// Load in the csv...
+		std::vector<delaunay::vector2> vertices = readCSV(csvFilename);
+
+		// Load in the edges csv...
+		std::vector<delaunay::vector2> edges = readCSV(edgesFilename);
+
+		// Load in the obj...
+		std::vector<delaunay::triangle> triangles = readOBJ(objFilename);
+
+		// perform the tessellation in accordance with the csv vertices...
+		delaunay::tessellator tessellator(vertices);
+
+		std::for_each(edges.begin(), edges.end(), 
+			[&tessellator](const delaunay::vector2& edge) 
+			{
+				tessellator.addConstraint(delaunay::edge{ static_cast<unsigned int>(edge.x_), static_cast<unsigned int>(edge.y_) });
+			});
+
+		// compare the vertices...
+		REQUIRE(tessellator.getVertices().size() == vertices.size());
+		for (unsigned int i = 0; i < vertices.size(); ++i)
+		{
+			const delaunay::vector2& v = vertices[i];
+			REQUIRE(std::find_if(tessellator.getVertices().begin(), tessellator.getVertices().end(), [&v](const delaunay::vector2& vv) { return approxEqual(v, vv); }) != tessellator.getVertices().end());
+		}
+
+		// compare to the obj triangles
+		REQUIRE(tessellator.getTriangles().size() == triangles.size());
+		for (unsigned int i = 0; i < triangles.size(); ++i)
+		{
+			const delaunay::triangle& t = triangles[i];
+			REQUIRE(std::find_if(tessellator.getTriangles().begin(), tessellator.getTriangles().end(), [&t](const delaunay::triangle& tt) { return equal(t, tt); }) != tessellator.getTriangles().end());
+		}
+
+	}
 }
 
 TEST_CASE("Tessellate triangle", "[delaunay_tessellate_triangle]") { check("data/triangle.csv", "data/triangle.obj"); }
 TEST_CASE("Tessellate square", "[delaunay_tessellate_sqaure]") { check("data/square.csv", "data/square.obj"); }
 TEST_CASE("Tessellate ellipse", "[delaunay_tessellate_ellipse]") { check("data/ellipse.csv", "data/ellipse.obj"); }
+TEST_CASE("Tessellate ellipse with constraint", "[delaunay_tessellate_ellipse_constaint]") { check("data/ellipse.csv", "data/ellipse_constraint.csv", "data/ellipse_constraint.obj"); }
+TEST_CASE("Tessellate ellipse with constraint overwrite", "[delaunay_tessellate_ellipse_constaint_overwrite]") { check("data/ellipse.csv", "data/ellipse_constraint_overwrite.csv", "data/ellipse_constraint_overwrite.obj"); }
 
