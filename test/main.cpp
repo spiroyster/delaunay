@@ -91,7 +91,7 @@ namespace
 	}
 }
 
-TEST_CASE("Tessellate triangle", "[delaunay_tessellate_triangle]") { check("triangle.csv", "triangle.obj"); }
-TEST_CASE("Tessellate square", "[delaunay_tessellate_sqaure]") { check("square.csv", "square.obj"); }
-TEST_CASE("Tessellate ellipse", "[delaunay_tessellate_ellipse]") { check("ellipse.csv", "ellipse.obj"); }
+TEST_CASE("Tessellate triangle", "[delaunay_tessellate_triangle]") { check("data/triangle.csv", "data/triangle.obj"); }
+TEST_CASE("Tessellate square", "[delaunay_tessellate_sqaure]") { check("data/square.csv", "data/square.obj"); }
+TEST_CASE("Tessellate ellipse", "[delaunay_tessellate_ellipse]") { check("data/ellipse.csv", "data/ellipse.obj"); }
 

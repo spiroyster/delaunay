@@ -52,7 +52,7 @@ namespace delaunay
 			return oss.str();
 		}
 
-		void validate(std::vector<vector2>& vertices)
+		void unique(std::vector<vector2>& vertices)
 		{
 			std::sort(vertices.begin(), vertices.end(), [](const vector2& a, const vector2& b) { return a.x_ == b.x_ ? a.y_ < b.y_ : a.x_ < b.x_; });
 			vertices.erase(std::unique(vertices.begin(), vertices.end(), [](const vector2& a, const vector2& b) { return a.x_ == b.x_ && a.y_ == b.y_; }), vertices.end());

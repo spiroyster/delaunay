@@ -1,0 +1,9 @@
+# delaunay output. https://github.com/spiroyster/delaunay
+
+# vertices...
+v 0 0 0
+v 1 0 0
+v 0.5 1 0
+
+# triangles...
+f 2 1 3

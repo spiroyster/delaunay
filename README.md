@@ -1,8 +1,8 @@
 # About
 
-Header only constrained delaunay tessellator, C++17 & STL only. 
+Single header only constrained delaunay tessellator, C++14 & STL only. 
 
-This is originally a fork of https://github.com/Bl4ckb0ne/delaunay-triangulation (Bowyer-Watson) with a few bug fixes and added support for constrained triangulations. (so Kudos to Bl4ckb0ne for original implementation!).
+This is originally a fork of https://github.com/Bl4ckb0ne/delaunay-triangulation (Bowyer-Watson), refactored, with a few bug fixes and added support for constrained triangulations. (so Kudos to Bl4ckb0ne for original implementation!).
 
 # Usage
 
@@ -12,41 +12,42 @@ Simply include delaunay.hpp and you're off!
 
 The Delaunay namespace provides a Tessellator class which you can use to create the tessellation of triangles given the input vertices. 
 
-    Delaunay::Tessellator tessellator;
-
-    std::vector<Delaunay::Vector2> vertices({
-			Delaunay::Vector2(0, 0),
-			Delaunay::Vector2(1.0, 0),
-			Delaunay::Vector2(0.5, 1.0)
+    std::vector<delaunay::vector2> vertices({
+			delaunay::vector2(0, 0),
+			delaunay::vector2(1.0, 0),
+			delaunay::vector2(0.5, 1.0)
 		});
 
-    std::list<Delaunay::Triangle> result = tessellator.triangulate(vertices);
+    delaunay::tessellator tess(vertices);
+    std::list<delaunay::triangle> result = tess.getTriangles();
 
-No stiener points are inserted so the number and ordering of vertices are preserved. The result is a list of triangles with pointers to the vertices contained in the tessellator class.
+No _Steiner_ points are inserted so the number and ordering of vertices are preserved. The result is a list of triangles with indexes of the original vertices container used for tessellation.
 
 ![Alt text](triangle.PNG?raw=true "Triangle")
 
-Vertices must be unique and not duplicated otherwise this will cause duplicate triangles to be calculated. A function is provided for convinience for this.
+Input vertices must be unique and not duplicated, otherwise this will cause erroneous tessellations. A function is provided for convinience for this.
 
-    ValidateVerticesForTessellation(vertices);
+    delaunay::convenience::unique(vertices);
 
-however since this function sorts these vertices before uniquing them, the ordering may not be preservered for the original vertices. Do not use if this is important.
+*N.B* since this function sorts these vertices before uniquing them, the ordering may not be preservered for the original vertices. 
 
-See examples/examples1.cpp for some more examples.
+Triangle winding is not enforced, this can be achieved by...
+
+For examples of usage. See **examples/examples1.cpp**.
+
+**examples/examples2.cpp** is a simple command line program that reads CSV files [vertex definitions (double, double), and edge definitions (int, int) to be used as constraints supplimenting the vertex definitions], and outputs (stdout) Wavefront OBJ valid syntax.
 
 ## Constrained tessellation
 
-Constraints can be used to force edges in the resultant triangulation. First tessellate the vertices.
+Constraints can be used to enforce edges in the resultant tessellation. First tessellate the vertices as per usual.
 
-e.g This snippet tessellated vertices definiing a ellipse which is 2 units wide, 1 unit high, with 16 segments.
-
-    Delaunay::Tessellator tessellator;
+e.g This snippet tessellated vertices defining a ellipse which is 2 units wide, 1 unit high, with 16 segments.
 
     unsigned int segments = 16;
     double width = 2.0;
     double height = 1.0;
 
-    std::vector<Delaunay::Vector2> vertices;
+    std::vector<delaunay::vector2> vertices;
     
     for (unsigned int d = 0; d < segments; ++d)
     {
@@ -54,15 +55,16 @@ e.g This snippet tessellated vertices definiing a ellipse which is 2 units wide,
         vertices.push_back(Delaunay::Vector2(width * cos(angle), height * sin(angle)));
     }
 
-    std::list<Delaunay::Triangle> result = tessellator.triangulate(vertices);
+    delaunay::tessellator tess(vertices);
+    std::list<delaunay::triangle> result = tess.getTriangles();
 
 ![Alt text](ellipse.PNG?raw=true "Ellipse")
 
-Constraines are added as vertex index pairs. Constraints are added individually, a single constraint at a time. If the edge defined by the two vertex indexes is already present in the tessellation, it is ignored.
+Constraints are added as edges (vertex index pairs). Constraints are added individually, a single constraint at a time. If the edge defined by the two vertex indexes is already present in the tessellation, it is ignored.
 
-    tessellator.addConstraint(std::pair<unsigned int, unsigned int>(0, segments / 2));
+    tessellator.addConstraint(delaunay::edge(0, segments / 2));
 
-Then call getTriangles() to get the resultant triangles from the constrained tessellation.
+Adding a constraint updates the triangles and edges within the tessellator instance. Vertices are unaffected.
 
 ![Alt text](constrained.PNG?raw=true "Constrained")
 
@@ -74,26 +76,32 @@ e.g Adding another constraint to the above tessellation which crosses the origin
 
 ![Alt text](constrained2.PNG?raw=true "Constrained2")
 
-See examples1.cpp for the above code in all its glory.
+To achieve  behavoir is to have both of these constraint edges added to the ellipse, in wich case we need to add an additional vertex to our list of vertices. Adding the intersection point of two oerlapping constraint edges gives a different tessellation (which just so happens to give us a desired constraint edge without adding an edge).
+
+
+however we need to add the other constraint edge (defined by two segments split by the intersection point) to ensure that the resultant tessellation contains all of our constraint edges.
+
+For examples of usage. See **examples/examples1.cpp**.
+
+# Tests
+
 
 # Bugs
 
-Please submit bug data (if applicable) as .csv. A CSV output function is provided for convenience.
+Please submit bug data (if applicable) as .csv, ideally this will be added as a test to identify regression in future development. A CSV output function is provided for convenience.
 
-    Delaunay::csv(std::vector<Delaunay::Vector2>)
+    delaunay::convenience::csv(std::vector<delaunay::vector2>)
 
-This does not create a csv file, only the syntax for a csv file, so caller is reposonsible for writing a file.
+This does not create a csv file, only the syntax for a csv file, so the caller is reposonsible for writing a file.
 
 e.g
 
     std::ofstream file("bugData.csv");
-    file << Delaunary::csv(vertices);
+    file << delaunary::convenience::csv(vertices);
 
 
 # Future
 
-* Potentially remove std::optional to allow compatiblilty with earlier C++ standards. std::optional is a C++17 addition.
-* Add tests
 * Doxygenate
 
 ![Alt text](footer.PNG?raw=true "Footer")
