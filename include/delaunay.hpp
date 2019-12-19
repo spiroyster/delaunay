@@ -42,6 +42,7 @@ namespace delaunay
 	struct triangle { unsigned int a_, b_, c_; };
 
 	const static double pi = 3.14159265358979323846;
+	const static double superTriangleSize = 20000.0;
 
 	namespace convenience
 	{
@@ -298,9 +299,9 @@ namespace delaunay
 			// Add our three super triangle vertices...
 			unsigned int p1Index = static_cast<unsigned int>(vertices_.size()), p2Index = static_cast<unsigned int>(vertices_.size() + 1), p3Index = static_cast<unsigned int>(vertices_.size() + 2);
 
-			vector2 p1(midx - 20.0 * deltaMax, midy - deltaMax);
-			vector2 p2(midx, midy + 20.0 * deltaMax);
-			vector2 p3(midx + 20.0 * deltaMax, midy - deltaMax);
+			vector2 p1(midx - superTriangleSize * deltaMax, midy - deltaMax);
+			vector2 p2(midx, midy + superTriangleSize * deltaMax);
+			vector2 p3(midx + superTriangleSize * deltaMax, midy - deltaMax);
 
 			workingVertices[vertexIndexes.size()] = workingVertex(&p1, p1Index);
 			workingVertices[vertexIndexes.size()+1] = workingVertex(&p2, p2Index);
